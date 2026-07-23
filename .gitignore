@@ -1,0 +1,22 @@
+# Node dependencies
+node_modules/
+dist/
+build/
+
+# Gradle/Android build outputs
+.gradle/
+app/build/
+*.apk
+local.properties
+
+# Python virtual environment and cache
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Environment variables
+.env
+.env.local
+mail_config.json
+chat_config.json

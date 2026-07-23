@@ -1,0 +1,188 @@
+from flask import Flask, request, jsonify
+import tensorflow as tf
+import numpy as np
+from PIL import Image
+import io
+import os
+
+app = Flask(__name__)
+
+MODEL_PATH = 'C:/XAMP/htdocs/aicaries/ai_model/model/dental_model.h5'
+model = None
+
+
+def load_model():
+    global model
+
+    if os.path.exists(MODEL_PATH):
+        model = tf.keras.models.load_model(MODEL_PATH)
+        print("Model loaded successfully!")
+    else:
+        print("Model not found!")
+
+
+def preprocess_image(image_bytes):
+
+    img = Image.open(io.BytesIO(image_bytes))
+
+    img = img.convert('RGB')
+
+    img = img.resize((224, 224))
+
+    img_array = np.array(img).astype("float32") / 255.0
+
+    img_array = np.expand_dims(img_array, axis=0)
+
+    return img_array
+
+
+@app.route('/predict', methods=['POST'])
+def predict():
+
+    if model is None:
+        return jsonify({
+            'success': False,
+            'message': 'Model not loaded'
+        })
+
+    if 'image' not in request.files:
+        return jsonify({
+            'success': False,
+            'message': 'No image provided'
+        })
+
+    try:
+
+        image_file = request.files['image']
+
+        image_bytes = image_file.read()
+
+        img_array = preprocess_image(image_bytes)
+
+        predictions = model.predict(img_array, verbose=0)
+
+        # Binary sigmoid output
+        raw_output = float(predictions[0][0])
+
+        # Convert to probabilities
+        no_caries_prob = raw_output * 100
+        caries_prob = (1 - raw_output) * 100
+
+        print("\n--- Prediction Debug ---")
+        print(f"Raw Output: {raw_output}")
+        print(f"Caries Prob: {caries_prob:.2f}%")
+        print(f"No Caries Prob: {no_caries_prob:.2f}%")
+        print("------------------------")
+
+        # STRICT threshold
+        if caries_prob >= 75:
+            label = 'caries'
+            confidence = round(caries_prob, 2)
+        else:
+            label = 'no_caries'
+            confidence = round(no_caries_prob, 2)
+
+        # Better risk score logic
+        if label == 'caries':
+            risk_score = int(caries_prob)
+        else:
+            risk_score = max(5, int(caries_prob * 0.3))
+
+        # Risk levels
+        if risk_score >= 70:
+            risk_level = 'High'
+
+        elif risk_score >= 40:
+            risk_level = 'Moderate'
+
+        else:
+            risk_level = 'Low'
+
+        # Recommendations
+        if label == 'caries':
+
+            if risk_level == 'High':
+
+                recommendations = [
+                    "⚠️ Cavities detected! Visit a dentist immediately.",
+                    "Brush teeth twice daily with fluoride toothpaste.",
+                    "Avoid sugary foods and drinks.",
+                    "Use antibacterial mouthwash daily.",
+                    "Floss between teeth every day."
+                ]
+
+            else:
+
+                recommendations = [
+                    "Possible early dental issues detected.",
+                    "Schedule a dental check-up soon.",
+                    "Brush teeth twice daily.",
+                    "Reduce sugary food and drink consumption.",
+                    "Use fluoride toothpaste daily."
+                ]
+
+        else:
+
+            recommendations = [
+                "✅ Teeth look healthy! Keep up the good work.",
+                "Continue brushing twice daily with fluoride toothpaste.",
+                "Floss daily to maintain gum health.",
+                "Drink plenty of water.",
+                "Visit your dentist every 6 months."
+            ]
+
+        return jsonify({
+
+            'success': True,
+
+            'prediction': label,
+
+            'confidence': confidence,
+
+            'caries_prob': round(caries_prob, 2),
+
+            'no_caries_prob': round(no_caries_prob, 2),
+
+            'risk_score': risk_score,
+
+            'risk_level': risk_level,
+
+            'recommendations': recommendations,
+
+            'message': 'Analysis complete'
+
+        })
+
+    except Exception as e:
+
+        print("Prediction Error:", str(e))
+
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        })
+
+
+@app.route('/health', methods=['GET'])
+def health():
+
+    return jsonify({
+        'status': 'running',
+        'model_loaded': model is not None,
+        'model_type': 'Binary Classification',
+        'threshold': '75%',
+        'accuracy': '98.84%'
+    })
+
+
+if __name__ == '__main__':
+
+    load_model()
+
+    print("AI API running on port 5000")
+
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=False
+    )

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#26C9A8</color>
+    <color name="colorPrimaryDark">#1BA88A</color>
+    <color name="teal_main">#26C9A8</color>
+    <color name="teal_dark">#1BA88A</color>
+    <color name="background_light">#E8F8F5</color>
+    <color name="white">#FFFFFF</color>
+    <color name="text_dark">#1A1A2E</color>
+    <color name="text_medium">#555555</color>
+    <color name="text_light">#888888</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="risk_low">#27AE60</color>
+    <color name="risk_low_bg">#E8F8F0</color>
+    <color name="risk_moderate">#F39C12</color>
+    <color name="risk_moderate_bg">#FEF9E7</color>
+    <color name="risk_high">#E74C3C</color>
+    <color name="risk_high_bg">#FDEDEC</color>
+    <color name="divider">#EEEEEE</color>
+    <color name="input_border">#DDDDDD</color>
+    <color name="bottom_nav_inactive">#AAAAAA</color>
+    <color name="teal_200">#26C9A8</color>
+    <color name="teal_700">#1BA88A</color>
+    <color name="black">#FF000000</color>
+</resources>
