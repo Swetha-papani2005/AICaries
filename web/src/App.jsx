@@ -35,10 +35,12 @@ import icHistory from './assets/ic_history.png';
 import icScan from './assets/ic_scan.png';
 import icTips from './assets/ic_tips.png';
 
-// Base URL for API requests on local XAMP Apache
-const API_BASE = window.location.origin.includes("localhost:") 
-  ? "http://localhost/aicaries/api/" 
-  : `${window.location.origin}/aicaries/api/`;
+// Base URL for API requests
+const API_BASE = window.location.origin.includes("github.io")
+  ? (localStorage.getItem("API_BASE_URL") || "https://aicaries-backend.cleverapps.io/")
+  : (window.location.origin.includes("localhost:") 
+      ? "http://localhost/aicaries/api/" 
+      : `${window.location.origin}/aicaries/api/`);
 
 function App() {
   // Navigation & Authentication state
