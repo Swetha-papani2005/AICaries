@@ -303,17 +303,20 @@ def generate_android_func_cases():
     return cases[:300]
 
 def main():
+    # Compute base path relative to this script's location
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    
     print("Generating Web UI Spacing Report...")
-    create_report(r"C:\XAMP\htdocs\aicaries\automated_tests\web_ui_test_report.xlsx", "Web UI & Spacing Tests", "Web UI", generate_web_ui_cases())
+    create_report(os.path.join(base_dir, "web_ui_test_report.xlsx"), "Web UI & Spacing Tests", "Web UI", generate_web_ui_cases())
     
     print("Generating Web Functional E2E Report...")
-    create_report(r"C:\XAMP\htdocs\aicaries\automated_tests\web_functional_test_report.xlsx", "Web Functional E2E Tests", "Web Functional", generate_web_func_cases())
+    create_report(os.path.join(base_dir, "web_functional_test_report.xlsx"), "Web Functional E2E Tests", "Web Functional", generate_web_func_cases())
     
     print("Generating Android UI & Spacing Report...")
-    create_report(r"C:\XAMP\htdocs\aicaries\automated_tests\android_ui_test_report.xlsx", "Android UI & Spacing Tests", "Android UI", generate_android_ui_cases())
+    create_report(os.path.join(base_dir, "android_ui_test_report.xlsx"), "Android UI & Spacing Tests", "Android UI", generate_android_ui_cases())
     
     print("Generating Android Functional E2E Report...")
-    create_report(r"C:\XAMP\htdocs\aicaries\automated_tests\android_functional_test_report.xlsx", "Android Functional E2E Tests", "Android Functional", generate_android_func_cases())
+    create_report(os.path.join(base_dir, "android_functional_test_report.xlsx"), "Android Functional E2E Tests", "Android Functional", generate_android_func_cases())
     
     print("\nAll 4 Excel sheets with 300 test cases each have been created successfully!")
 
