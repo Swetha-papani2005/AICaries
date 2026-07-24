@@ -1,4 +1,4 @@
-name: AICaries E2E Testing (Selenium, Appium, Vulnerability, Load)
+name: 1. Selenium Web Testing
 
 on:
   push:
@@ -8,10 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  testing-and-reports:
-    name: Generate All Test Reports
+  selenium-tests:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -26,19 +24,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install openpyxl
 
-      - name: Generate E2E Excel Reports
+      - name: Generate Selenium Reports
         run: |
           python automated_tests/generate_all_reports.py
 
-      - name: Upload E2E Test Report Artifacts
+      - name: Upload Selenium Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: E2E-Automation-Test-Reports
+          name: Selenium-Web-Test-Reports
           path: |
             automated_tests/web_ui_test_report.xlsx
             automated_tests/web_functional_test_report.xlsx
-            automated_tests/android_ui_test_report.xlsx
-            automated_tests/android_functional_test_report.xlsx
-            automated_tests/vulnerability_test_report.xlsx
-            automated_tests/load_test_report.xlsx
           if-no-files-found: error
