@@ -56,4 +56,6 @@ jobs:
             automated_tests/web_functional_test_report.xlsx
             automated_tests/android_ui_test_report.xlsx
             automated_tests/android_functional_test_report.xlsx
+            automated_tests/vulnerability_test_report.xlsx
+            automated_tests/load_test_report.xlsx
           if-no-files-found: error

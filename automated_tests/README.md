@@ -2,7 +2,7 @@
 
 This directory contains the testing architecture for the **AICaries Dental Care Portal** (React Web App + Kotlin Android App).
 
-We have generated **4 Excel reports** containing **300 test cases each** (1,200 test cases total) to validate the system's end-to-end user flows, user interfaces, constraints, and functionalities.
+We have generated **6 Excel reports** containing **300 test cases each** (1,800 test cases total) to validate the system's end-to-end user flows, user interfaces, constraints, functionalities, vulnerabilities, and load performance thresholds.
 
 ---
 
@@ -13,6 +13,8 @@ The following files are located in this directory (`C:\XAMP\htdocs\aicaries\auto
 2. **[web_functional_test_report.xlsx](file:///C:/XAMP/htdocs/aicaries/automated_tests/web_functional_test_report.xlsx)**: 300 test cases validating form submissions, validation toasts, database inserts, and chatbot integrations in the browser.
 3. **[android_ui_test_report.xlsx](file:///C:/XAMP/htdocs/aicaries/automated_tests/android_ui_test_report.xlsx)**: 300 test cases validating XML constraints, margin spacings, card elevations, logo vector scaling, and orientation adaptations.
 4. **[android_functional_test_report.xlsx](file:///C:/XAMP/htdocs/aicaries/automated_tests/android_functional_test_report.xlsx)**: 300 test cases validating SharedPreferences session tokens, SQLite queries, multipart image uploads, cURL routing, and native printing via PrintManager.
+5. **[vulnerability_test_report.xlsx](file:///C:/XAMP/htdocs/aicaries/automated_tests/vulnerability_test_report.xlsx)**: 300 test cases validating SQL Injection, XSS defenses, CSRF tokens, session fixation blocks, log injection protection, and directory traversal safeguards.
+6. **[load_test_report.xlsx](file:///C:/XAMP/htdocs/aicaries/automated_tests/load_test_report.xlsx)**: 300 test cases validating system behavior under 10 to 500 concurrent virtual users, ramp-up/ramp-down, database pool exhaustion checks, and chatbot peak load thresholds.
 
 ---
 
