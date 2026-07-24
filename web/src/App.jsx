@@ -37,7 +37,7 @@ import icTips from './assets/ic_tips.png';
 
 // Base URL for API requests
 const API_BASE = window.location.origin.includes("github.io")
-  ? (localStorage.getItem("API_BASE_URL") || "https://aicaries-backend.cleverapps.io/")
+  ? (localStorage.getItem("API_BASE_URL") || "https://app-17b106e1-724c-43db-bcc5-196c5d9e4f65.cleverapps.io/api/")
   : (window.location.origin.includes("localhost:") 
       ? "http://localhost/aicaries/api/" 
       : `${window.location.origin}/aicaries/api/`);
