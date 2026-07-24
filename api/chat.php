@@ -8,11 +8,13 @@ $history = $input['history'] ?? [];
 if (empty($message)) {
     sendResponse(false, "Message is empty");
 }
-$config_path = __DIR__ . '/chat_config.json';
-$GROQ_API_KEY = "";
-if (file_exists($config_path)) {
-    $chat_config = json_decode(file_get_contents($config_path), true);
-    $GROQ_API_KEY = $chat_config['groq_api_key'] ?? '';
+$GROQ_API_KEY = getenv('GROQ_API_KEY');
+if (empty($GROQ_API_KEY)) {
+    $config_path = __DIR__ . '/chat_config.json';
+    if (file_exists($config_path)) {
+        $chat_config = json_decode(file_get_contents($config_path), true);
+        $GROQ_API_KEY = $chat_config['groq_api_key'] ?? '';
+    }
 }
 $GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
