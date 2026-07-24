@@ -27,9 +27,23 @@ $stmt = $conn->prepare("INSERT INTO password_resets (email, token) VALUES (?, ?)
 $stmt->bind_param("ss", $email, $token);
 $stmt->execute();
 
-// Build dynamic link using the host accessed by the user
+// Check if running on localhost or a local network IP
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$resetLink = "http://" . $host . "/aicaries/web/dist/index.html?token=" . $token . "&email=" . urlencode($email);
+$isLocal = false;
+$localHosts = ['localhost', '127.0.0.1', '10.']; // matches localhost, 127.x, or 10.x local network IPs
+foreach ($localHosts as $lh) {
+    if (stripos($host, $lh) !== false) {
+        $isLocal = true;
+        break;
+    }
+}
+
+if ($isLocal) {
+    $resetLink = "http://" . $host . "/aicaries/web/dist/index.html?token=" . $token . "&email=" . urlencode($email);
+} else {
+    // Live GitHub Pages frontend
+    $resetLink = "https://swetha-papani2005.github.io/AICaries/?token=" . $token . "&email=" . urlencode($email);
+}
 
 $emailMessage = '
 <!DOCTYPE html>
