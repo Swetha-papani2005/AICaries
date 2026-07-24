@@ -1,4 +1,4 @@
-name: 2. Appium Mobile E2E Testing
+name: AICaries E2E Testing (Selenium, Appium, Vulnerability, Load)
 
 on:
   push:
@@ -8,8 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  appium-tests:
+  testing-and-reports:
+    name: Generate All Test Reports
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -24,15 +26,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install openpyxl
 
-      - name: Generate Appium Reports
+      - name: Generate E2E Excel Reports
         run: |
           python automated_tests/generate_all_reports.py
 
-      - name: Upload Appium Artifacts
+      - name: Upload E2E Test Report Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Appium-Mobile-Test-Reports
+          name: E2E-Automation-Test-Reports
           path: |
+            automated_tests/web_ui_test_report.xlsx
+            automated_tests/web_functional_test_report.xlsx
             automated_tests/android_ui_test_report.xlsx
             automated_tests/android_functional_test_report.xlsx
+            automated_tests/vulnerability_test_report.xlsx
+            automated_tests/load_test_report.xlsx
           if-no-files-found: error
