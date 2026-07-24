@@ -56,7 +56,7 @@ The project is structured into modular component directories:
 
 ### 1. Database Setup
 1. Open XAMPP and start Apache and MySQL (configured to port `3307` or standard `3306`).
-2. Import the schema file `aicaries.sql` (found in your Downloads or repository assets) into phpMyAdmin at `http://localhost/phpmyadmin`.
+2. Import the database schema file **`schema.sql`** (located inside the **`database/`** directory of this repository) into phpMyAdmin at `http://localhost/phpmyadmin`.
 
 ### 2. Run the Backend API (XAMPP)
 1. Place the repository folder in your local XAMPP server path (e.g., `C:\xampp\htdocs\aicaries`).
