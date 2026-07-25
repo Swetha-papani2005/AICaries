@@ -19,12 +19,12 @@ function detectCariesHeuristic($filepath, $type) {
     $width = imagesx($img);
     $height = imagesy($img);
     
-    $dark_pixels = 0;
+    $total_brightness = 0;
     $total = 0;
     
-    // Sample a 30x30 grid for higher resolution check
-    $step_x = max(1, intval($width / 30));
-    $step_y = max(1, intval($height / 30));
+    // Sample a 20x20 grid
+    $step_x = max(1, intval($width / 20));
+    $step_y = max(1, intval($height / 20));
     
     for ($x = 0; $x < $width; $x += $step_x) {
         for ($y = 0; $y < $height; $y += $step_y) {
@@ -33,12 +33,7 @@ function detectCariesHeuristic($filepath, $type) {
             $g = ($rgb >> 8) & 0xFF;
             $b = $rgb & 0xFF;
             
-            $brightness = ($r + $g + $b) / 3;
-            
-            // Check for dark cavity/decay color (typical black/dark-brown caries points, RGB threshold < 78)
-            if ($brightness < 78) {
-                $dark_pixels++;
-            }
+            $total_brightness += ($r + $g + $b) / 3;
             $total++;
         }
     }
@@ -47,8 +42,11 @@ function detectCariesHeuristic($filepath, $type) {
     
     if ($total === 0) return false;
     
-    // If more than 3.5% of the teeth scan contains dark decay spots, classify as Caries detected!
-    return ($dark_pixels / $total) > 0.035;
+    $avg_brightness = $total_brightness / $total;
+    
+    // Decayed teeth photos are much darker due to black/brown cavity spots (average brightness < 125).
+    // Healthy clean teeth photos are bright white/pink (average brightness >= 125).
+    return $avg_brightness < 125;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
