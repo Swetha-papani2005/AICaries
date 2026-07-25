@@ -12,7 +12,7 @@ object ApiClient {
     // !! CHANGE THIS to your computer's IP address !!
     // Example: "http://192.168.1.5/aicaries/api/"
     // To find IP: open Command Prompt → type ipconfig → look for IPv4 Address
-    const val BASE_URL = "http://10.219.5.63/aicaries/api/"
+    const val BASE_URL = "https://app-17b106e1-724c-43db-bcc5-196c5d9e4f65.cleverapps.io/api/"
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)

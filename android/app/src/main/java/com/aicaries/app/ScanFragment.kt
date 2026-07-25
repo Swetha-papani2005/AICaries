@@ -34,7 +34,7 @@ class ScanFragment : Fragment() {
     private lateinit var ivPreview: ImageView
     private lateinit var btnAnalyse: Button
 
-    private val SCAN_URL = "http://10.219.5.63/aicaries/api/scan_analysis.php"
+    private val SCAN_URL = "https://app-17b106e1-724c-43db-bcc5-196c5d9e4f65.cleverapps.io/api/scan_analysis.php"
     private val pickImage = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
