@@ -122,7 +122,7 @@ if ($response === false || empty($response)) {
             "risk_score" => 65,
             "risk_level" => "Moderate",
             "confidence" => 0.88,
-            "prediction" => "Moderate Dental Caries detected on front incisors. Recommendation: schedule a dental scaling session.",
+            "prediction" => "caries",
             "recommendations" => [
                 "Schedule a professional dental checkup within the next 2-3 weeks.",
                 "Use a fluoride-based toothpaste twice daily.",
@@ -133,7 +133,7 @@ if ($response === false || empty($response)) {
             "risk_score" => 85,
             "risk_level" => "High",
             "confidence" => 0.92,
-            "prediction" => "High Dental Caries detected in posterior molars. Recommendation: schedule an urgent dental filling or restoration.",
+            "prediction" => "caries",
             "recommendations" => [
                 "Schedule an urgent dental appointment this week.",
                 "Rinse with an antiseptic mouthwash twice daily.",
@@ -144,7 +144,7 @@ if ($response === false || empty($response)) {
             "risk_score" => 20,
             "risk_level" => "Low",
             "confidence" => 0.95,
-            "prediction" => "No sign of significant dental caries detected. Keep up your excellent oral hygiene routine!",
+            "prediction" => "no_caries",
             "recommendations" => [
                 "Maintain your regular brushing and flossing routine.",
                 "Schedule your next routine dental clean-up in 6 months.",
@@ -180,7 +180,7 @@ if ($response === false || empty($response)) {
                 "risk_score" => 65,
                 "risk_level" => "Moderate",
                 "confidence" => 0.88,
-                "prediction" => "Moderate Dental Caries detected on front incisors. Recommendation: schedule a dental scaling session.",
+                "prediction" => "caries",
                 "recommendations" => [
                     "Schedule a professional dental checkup within the next 2-3 weeks.",
                     "Use a fluoride-based toothpaste twice daily.",
