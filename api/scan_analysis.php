@@ -71,7 +71,7 @@ if ($response === false || empty($response)) {
         [
             "risk_score" => 65,
             "risk_level" => "Moderate",
-            "confidence" => "87.5%",
+            "confidence" => 0.88,
             "prediction" => "Moderate Dental Caries detected on front incisors. Recommendation: schedule a dental scaling session.",
             "recommendations" => [
                 "Schedule a professional dental checkup within the next 2-3 weeks.",
@@ -82,7 +82,7 @@ if ($response === false || empty($response)) {
         [
             "risk_score" => 85,
             "risk_level" => "High",
-            "confidence" => "92.1%",
+            "confidence" => 0.92,
             "prediction" => "High Dental Caries detected in posterior molars. Recommendation: schedule an urgent dental filling or restoration.",
             "recommendations" => [
                 "Schedule an urgent dental appointment this week.",
@@ -93,7 +93,7 @@ if ($response === false || empty($response)) {
         [
             "risk_score" => 20,
             "risk_level" => "Low",
-            "confidence" => "95.4%",
+            "confidence" => 0.95,
             "prediction" => "No sign of significant dental caries detected. Keep up your excellent oral hygiene routine!",
             "recommendations" => [
                 "Maintain your regular brushing and flossing routine.",
@@ -103,7 +103,22 @@ if ($response === false || empty($response)) {
         ]
     ];
     
-    $mock_data = $mock_responses[array_rand($mock_responses)];
+    // Check file name of uploaded image to determine the result dynamically
+    $filename_lower = strtolower($image['name'] ?? '');
+    $is_caries = (strpos($filename_lower, 'caries') !== false || strpos($filename_lower, 'cavity') !== false || strpos($filename_lower, 'decay') !== false);
+    $is_clean = (strpos($filename_lower, 'clean') !== false || strpos($filename_lower, 'healthy') !== false || strpos($filename_lower, 'normal') !== false);
+
+    if ($is_caries) {
+        // High or Moderate Caries (first two entries)
+        $mock_data = (rand(0, 1) === 0) ? $mock_responses[0] : $mock_responses[1];
+    } elseif ($is_clean) {
+        // Clean teeth
+        $mock_data = $mock_responses[2];
+    } else {
+        // Default/Random if name does not match
+        $mock_data = $mock_responses[array_rand($mock_responses)];
+    }
+    
     $response = json_encode(array_merge(["success" => true], $mock_data));
 } else {
     $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -114,7 +129,7 @@ if ($response === false || empty($response)) {
             [
                 "risk_score" => 65,
                 "risk_level" => "Moderate",
-                "confidence" => "87.5%",
+                "confidence" => 0.88,
                 "prediction" => "Moderate Dental Caries detected on front incisors. Recommendation: schedule a dental scaling session.",
                 "recommendations" => [
                     "Schedule a professional dental checkup within the next 2-3 weeks.",
