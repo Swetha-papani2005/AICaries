@@ -68,7 +68,15 @@ if (!in_array($image['type'], $allowed_types)) {
 }
 
 // FLASK AI API URL
+$conn = getConnection();
 $ai_api_url = getenv('AI_MODEL_URL') ?: "http://127.0.0.1:5000/predict";
+
+// Fetch the dynamically registered tunnel URL from database
+$settings_check = $conn->query("SELECT key_value FROM settings WHERE key_name = 'ai_model_url'");
+if ($settings_check && $settings_check->num_rows > 0) {
+    $settings_row = $settings_check->fetch_assoc();
+    $ai_api_url = $settings_row['key_value'];
+}
 
 // SAVE IMAGE FILE PERMANENTLY
 $uploads_dir = __DIR__ . '/uploads';
@@ -244,8 +252,6 @@ if ($has_clean_keyword) {
 }
 
 // SAVE TO DATABASE
-
-$conn = getConnection();
 
 $stmt = $conn->prepare("
     INSERT INTO results
