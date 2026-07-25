@@ -102,7 +102,11 @@ curl_setopt_array($curl, [
 
     CURLOPT_TIMEOUT => 120,
 
-    CURLOPT_CONNECTTIMEOUT => 120
+    CURLOPT_CONNECTTIMEOUT => 120,
+
+    CURLOPT_HTTPHEADER => [
+        'Bypass-Tunnel-Reminder: true'
+    ]
 ]);
 
 // EXECUTE REQUEST
