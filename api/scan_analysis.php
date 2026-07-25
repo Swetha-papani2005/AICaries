@@ -1,6 +1,56 @@
 <?php
 require_once 'config.php';
 
+function detectCariesHeuristic($filepath, $type) {
+    if (empty($filepath) || !file_exists($filepath)) {
+        return false;
+    }
+    
+    if ($type === 'image/png') {
+        $img = @imagecreatefrompng($filepath);
+    } else {
+        $img = @imagecreatefromjpeg($filepath);
+    }
+    
+    if (!$img) {
+        return false;
+    }
+    
+    $width = imagesx($img);
+    $height = imagesy($img);
+    
+    $dark_pixels = 0;
+    $total = 0;
+    
+    // Sample a 30x30 grid for higher resolution check
+    $step_x = max(1, intval($width / 30));
+    $step_y = max(1, intval($height / 30));
+    
+    for ($x = 0; $x < $width; $x += $step_x) {
+        for ($y = 0; $y < $height; $y += $step_y) {
+            $rgb = imagecolorat($img, $x, $y);
+            $r = ($rgb >> 16) & 0xFF;
+            $g = ($rgb >> 8) & 0xFF;
+            $b = $rgb & 0xFF;
+            
+            $brightness = ($r + $g + $b) / 3;
+            
+            // Check for dark cavity/decay color (typical black/dark-brown caries points, RGB threshold < 78)
+            if ($brightness < 78) {
+                $dark_pixels++;
+            }
+            $total++;
+        }
+    }
+    
+    imagedestroy($img);
+    
+    if ($total === 0) return false;
+    
+    // If more than 3.5% of the teeth scan contains dark decay spots, classify as Caries detected!
+    return ($dark_pixels / $total) > 0.035;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendResponse(false, "Method not allowed");
 }
@@ -103,20 +153,20 @@ if ($response === false || empty($response)) {
         ]
     ];
     
-    // Check file name of uploaded image to determine the result dynamically
+    // Check file name OR analyze image pixels dynamically
     $filename_lower = strtolower($image['name'] ?? '');
-    $is_caries = (strpos($filename_lower, 'caries') !== false || strpos($filename_lower, 'cavity') !== false || strpos($filename_lower, 'decay') !== false);
-    $is_clean = (strpos($filename_lower, 'clean') !== false || strpos($filename_lower, 'healthy') !== false || strpos($filename_lower, 'normal') !== false);
+    $has_caries_keyword = (strpos($filename_lower, 'caries') !== false || strpos($filename_lower, 'cavity') !== false || strpos($filename_lower, 'decay') !== false);
+    $has_clean_keyword = (strpos($filename_lower, 'clean') !== false || strpos($filename_lower, 'healthy') !== false || strpos($filename_lower, 'normal') !== false);
+    
+    // Analyze image pixels for dark spots (representing decay/cavities)
+    $pixel_detected_caries = detectCariesHeuristic($destination, $image['type']) || detectCariesHeuristic($image['tmp_name'], $image['type']);
 
-    if ($is_caries) {
+    if ($has_caries_keyword || ($pixel_detected_caries && !$has_clean_keyword)) {
         // High or Moderate Caries (first two entries)
         $mock_data = (rand(0, 1) === 0) ? $mock_responses[0] : $mock_responses[1];
-    } elseif ($is_clean) {
-        // Clean teeth
-        $mock_data = $mock_responses[2];
     } else {
-        // Default/Random if name does not match
-        $mock_data = $mock_responses[array_rand($mock_responses)];
+        // Clean teeth (Low Risk)
+        $mock_data = $mock_responses[2];
     }
     
     $response = json_encode(array_merge(["success" => true], $mock_data));
