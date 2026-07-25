@@ -42,10 +42,54 @@ const API_BASE = window.location.origin.includes("github.io")
       ? "http://localhost/aicaries/api/" 
       : `${window.location.origin}/aicaries/api/`);
 
+const translations = {
+  en: {
+    home: "Home Dashboard",
+    assessment: "Risk Assessment",
+    scan: "AI Dental Scan",
+    history: "Checkup History",
+    chatbot: "Teeth AI Chatbot",
+    tips: "Oral Care Tips",
+    profile: "Profile Settings",
+    signout: "Sign Out",
+    welcome: "Welcome Back",
+    dentalPortal: "Dental Care Portal",
+    scanDesc: "Upload a photo of your teeth to analyze cavity risk.",
+    startAssessment: "Start Assessment",
+    startScan: "Start New Scan",
+    recentActivity: "Recent Activity",
+    recommendations: "Oral Health Recommendations",
+    noRecentActivity: "No recent activity found. Click scan to get started."
+  },
+  id: {
+    home: "Dasbor Utama",
+    assessment: "Penilaian Risiko",
+    scan: "Pemindaian Gigi AI",
+    history: "Riwayat Pemeriksaan",
+    chatbot: "Asisten AI Gigi",
+    tips: "Tips Perawatan Mulut",
+    profile: "Pengaturan Profil",
+    signout: "Keluar",
+    welcome: "Selamat Datang Kembali",
+    dentalPortal: "Portal Perawatan Gigi",
+    scanDesc: "Unggah foto gigi Anda untuk menganalisis risiko kavitas.",
+    startAssessment: "Mulai Penilaian",
+    startScan: "Mulai Pemindaian Baru",
+    recentActivity: "Aktivitas Terbaru",
+    recommendations: "Rekomendasi Kesehatan Mulut",
+    noRecentActivity: "Aktivitas tidak ditemukan. Klik scan untuk memulai."
+  }
+};
+
 function App() {
   // Navigation & Authentication state
   const [currentScreen, setCurrentScreen] = useState('splash'); // splash, language, signin, signup, forgot, home, assessment, scan, result_detail, history, profile, tips, chat
   const [language, setLanguage] = useState(() => localStorage.getItem('app_lang') || 'en');
+  
+  const t = (key) => {
+    return translations[language]?.[key] || translations['en']?.[key] || key;
+  };
+
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem('app_user');
@@ -140,6 +184,7 @@ function App() {
           setCurrentScreen={setCurrentScreen} 
           handleLogout={handleLogout} 
           user={user} 
+          t={t}
         />
       )}
 
@@ -308,7 +353,7 @@ function App() {
 // -------------------------------------------------------------------
 // DESKTOP NAVIGATION SIDEBAR
 // -------------------------------------------------------------------
-function Sidebar({ currentScreen, setCurrentScreen, handleLogout, user }) {
+function Sidebar({ currentScreen, setCurrentScreen, handleLogout, user, t }) {
   const firstName = user.name.split(' ')[0] || 'User';
 
   return (
@@ -324,49 +369,49 @@ function Sidebar({ currentScreen, setCurrentScreen, handleLogout, user }) {
           onClick={() => setCurrentScreen('home')}
         >
           <Activity size={18} />
-          <span>Home Dashboard</span>
+          <span>{t('home')}</span>
         </div>
         <div 
           className={`sidebar-menu-item ${currentScreen === 'assessment' ? 'active' : ''}`}
           onClick={() => setCurrentScreen('assessment')}
         >
           <Award size={18} />
-          <span>Risk Assessment</span>
+          <span>{t('assessment')}</span>
         </div>
         <div 
           className={`sidebar-menu-item ${currentScreen === 'scan' ? 'active' : ''}`}
           onClick={() => setCurrentScreen('scan')}
         >
           <Camera size={18} />
-          <span>AI Dental Scan</span>
+          <span>{t('scan')}</span>
         </div>
         <div 
           className={`sidebar-menu-item ${currentScreen === 'history' ? 'active' : ''}`}
           onClick={() => setCurrentScreen('history')}
         >
           <History size={18} />
-          <span>Checkup History</span>
+          <span>{t('history')}</span>
         </div>
         <div 
           className={`sidebar-menu-item ${currentScreen === 'chat' ? 'active' : ''}`}
           onClick={() => setCurrentScreen('chat')}
         >
           <Smile size={18} />
-          <span>Teeth AI Chatbot</span>
+          <span>{t('chatbot')}</span>
         </div>
         <div 
           className={`sidebar-menu-item ${currentScreen === 'tips' ? 'active' : ''}`}
           onClick={() => setCurrentScreen('tips')}
         >
           <Sparkles size={18} />
-          <span>Oral Care Tips</span>
+          <span>{t('tips')}</span>
         </div>
         <div 
           className={`sidebar-menu-item ${currentScreen === 'profile' ? 'active' : ''}`}
           onClick={() => setCurrentScreen('profile')}
         >
           <User size={18} />
-          <span>Profile Settings</span>
+          <span>{t('profile')}</span>
         </div>
       </div>
 
