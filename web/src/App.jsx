@@ -124,12 +124,7 @@ function App() {
         if (user) {
           setCurrentScreen('home');
         } else {
-          const langSet = localStorage.getItem('app_lang');
-          if (!langSet) {
-            setCurrentScreen('language');
-          } else {
-            setCurrentScreen('signin');
-          }
+          setCurrentScreen('signin');
         }
       }, 2200);
       return () => clearTimeout(timer);
@@ -188,16 +183,8 @@ function App() {
         />
       )}
 
-      {/* Main content pane */}
-      <div className={user && currentScreen !== 'splash' && currentScreen !== 'language' ? "main-content" : "auth-wrapper"}>
+      <div className={user && currentScreen !== 'splash' ? "main-content" : "auth-wrapper"}>
         {currentScreen === 'splash' && <SplashScreen />}
-        
-        {currentScreen === 'language' && (
-          <LanguageScreen 
-            setLanguage={setLanguage} 
-            setCurrentScreen={setCurrentScreen} 
-          />
-        )}
         
         {currentScreen === 'signin' && (
           <SignInScreen 

@@ -43,9 +43,8 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        view.findViewById<CardView>(R.id.cardLanguage).setOnClickListener {
-            startActivity(Intent(requireContext(), LanguageActivity::class.java))
-        }
+        val cardLanguage = view.findViewById<CardView>(R.id.cardLanguage)
+        cardLanguage.visibility = android.view.View.GONE
 
         view.findViewById<CardView>(R.id.cardSignOut).setOnClickListener {
             session.logout()
