@@ -254,9 +254,10 @@ $stmt = $conn->prepare("
         overall_score,
         risk_level,
         result_type,
-        answers
+        answers,
+        image
     )
-    VALUES (?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?)
 ");
 
 $answers_json = json_encode([
@@ -273,12 +274,13 @@ $answers_json = json_encode([
 $result_type = 'scan';
 
 $stmt->bind_param(
-    "iisss",
+    "iissss",
     $user_id,
     $overall_score,
     $risk_level,
     $result_type,
-    $answers_json
+    $answers_json,
+    $image_path
 );
 
 $stmt->execute();

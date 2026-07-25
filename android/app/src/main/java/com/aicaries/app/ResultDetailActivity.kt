@@ -276,10 +276,11 @@ class ResultDetailActivity : AppCompatActivity() {
                 score
             )
 
+            val confidenceVal = if (confidence > 1f) confidence.toInt() else (confidence * 100f).toInt()
             setRow(
                 R.id.rowHygiene,
                 "AI Confidence",
-                confidence.toInt()
+                confidenceVal
             )
 
             setRow(
