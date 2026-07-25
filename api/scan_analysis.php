@@ -201,11 +201,11 @@ $ai_result = json_decode($response, true);
 
 // VALIDATE AI RESPONSE
 
-if (!$ai_result || !$ai_result['success']) {
-
+if (!$ai_result || !($ai_result['success'] ?? false)) {
+    $error_msg = $ai_result['message'] ?? ("AI analysis failed: " . $response);
     sendResponse(
         false,
-        "AI analysis failed: " . $response
+        $error_msg
     );
 }
 

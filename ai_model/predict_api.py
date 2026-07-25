@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import tensorflow as tf
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 import io
 import os
 
@@ -21,6 +21,52 @@ def load_model():
         print("Model loaded successfully!")
     else:
         print("Model not found!")
+
+
+def validate_image(image_bytes):
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+        img = img.convert('RGB')
+        
+        # 1. Color heuristic to check if it's a valid teeth/mouth image
+        arr = np.array(img)
+        h, w, c = arr.shape
+        r_mean = arr[:,:,0].mean()
+        g_mean = arr[:,:,1].mean()
+        b_mean = arr[:,:,2].mean()
+        
+        # Count red/pink pixels (lips/gums) and white/yellow pixels (teeth)
+        gums_pixels = np.sum((arr[:,:,0] > arr[:,:,1] + 25) & (arr[:,:,0] > arr[:,:,2] + 25))
+        teeth_pixels = np.sum((arr[:,:,0] > 130) & (arr[:,:,1] > 120) & (arr[:,:,0] - arr[:,:,1] < 30) & (arr[:,:,1] - arr[:,:,2] < 50))
+        
+        total_pixels = h * w
+        gums_ratio = gums_pixels / total_pixels
+        teeth_ratio = teeth_pixels / total_pixels
+        
+        print("\n--- Image Validation Debug ---")
+        print(f"Red Mean: {r_mean:.2f}, Green Mean: {g_mean:.2f}, Blue Mean: {b_mean:.2f}")
+        print(f"Gums Ratio: {gums_ratio:.4f}, Teeth Ratio: {teeth_ratio:.4f}")
+        
+        # If gums and teeth features are almost non-existent, it's not a mouth image
+        if gums_ratio < 0.005 and teeth_ratio < 0.01:
+            print("Validation: Failed (Not a teeth image)")
+            return False, "Invalid Image: This is not an image of teeth."
+            
+        # 2. Check if the image is too blurry using edge variance (high-pass filter)
+        gray = img.convert('L')
+        edges = gray.filter(ImageFilter.FIND_EDGES)
+        edge_arr = np.array(edges)
+        variance = edge_arr.var()
+        print(f"Edge Variance (Sharpness): {variance:.2f}")
+        print("------------------------------")
+        
+        if variance < 3.5:
+            print("Validation: Failed (Blurry image)")
+            return False, "Image not clear. Please capture a sharper photo."
+            
+        return True, "Success"
+    except Exception as e:
+        return False, f"Invalid image format: {str(e)}"
 
 
 def preprocess_image(image_bytes):
@@ -58,6 +104,14 @@ def predict():
         image_file = request.files['image']
 
         image_bytes = image_file.read()
+
+        # Validate image (check for blur and non-teeth images)
+        is_valid, validation_msg = validate_image(image_bytes)
+        if not is_valid:
+            return jsonify({
+                'success': False,
+                'message': validation_msg
+            })
 
         img_array = preprocess_image(image_bytes)
 
