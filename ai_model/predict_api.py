@@ -35,20 +35,18 @@ def validate_image(image_bytes):
         g_mean = arr[:,:,1].mean()
         b_mean = arr[:,:,2].mean()
         
-        # Count red/pink pixels (lips/gums) and white/yellow pixels (teeth)
-        gums_pixels = np.sum((arr[:,:,0] > arr[:,:,1] + 25) & (arr[:,:,0] > arr[:,:,2] + 25))
-        teeth_pixels = np.sum((arr[:,:,0] > 130) & (arr[:,:,1] > 120) & (arr[:,:,0] - arr[:,:,1] < 30) & (arr[:,:,1] - arr[:,:,2] < 50))
+        # Count red/pink pixels (lips/gums) specifically to verify it's a mouth photo
+        gums_pixels = np.sum((arr[:,:,0] > 100) & (arr[:,:,0] > arr[:,:,1] + 35) & (arr[:,:,0] > arr[:,:,2] + 35) & (arr[:,:,1] < 120) & (arr[:,:,2] < 120))
         
         total_pixels = h * w
         gums_ratio = gums_pixels / total_pixels
-        teeth_ratio = teeth_pixels / total_pixels
         
         print("\n--- Image Validation Debug ---")
         print(f"Red Mean: {r_mean:.2f}, Green Mean: {g_mean:.2f}, Blue Mean: {b_mean:.2f}")
-        print(f"Gums Ratio: {gums_ratio:.4f}, Teeth Ratio: {teeth_ratio:.4f}")
+        print(f"Gums Ratio: {gums_ratio:.4f}")
         
-        # If gums and teeth features are almost non-existent, it's not a mouth image
-        if gums_ratio < 0.003 or teeth_ratio < 0.005:
+        # If gums/lips are not detected (less than 1% of the image), it's not a mouth photo
+        if gums_ratio < 0.01:
             print("Validation: Failed (Not a teeth image)")
             return False, "Invalid Image: This is not an image of teeth."
             
