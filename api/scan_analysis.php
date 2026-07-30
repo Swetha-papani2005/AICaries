@@ -1,5 +1,7 @@
-<?php
 require_once 'config.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 function detectCariesHeuristic($filepath, $type) {
     if (empty($filepath) || !file_exists($filepath)) {
