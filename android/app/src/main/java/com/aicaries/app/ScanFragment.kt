@@ -423,22 +423,20 @@ class ScanFragment : Fragment() {
 
                                     startActivity(intent)
 
-                                } else {
-
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "❌ ${json.getString("message")}",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    android.app.AlertDialog.Builder(requireContext())
+                                        .setTitle("AI Dental Scan")
+                                        .setMessage(json.getString("message"))
+                                        .setPositiveButton("OK", null)
+                                        .show()
                                 }
 
                             } catch (e: Exception) {
 
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Error: ${e.message}",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                android.app.AlertDialog.Builder(requireContext())
+                                    .setTitle("AI Dental Scan")
+                                    .setMessage("Error: ${e.message}")
+                                    .setPositiveButton("OK", null)
+                                    .show()
                             }
                         }
                     }

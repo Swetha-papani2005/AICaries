@@ -1408,10 +1408,12 @@ function ScanScreen({ user, setCurrentScreen, lastAssessmentScore, setSelectedRe
 
       } else {
         setAnalyzing(false);
+        alert(data.message || "AI Analysis failed. Make sure Flask API is running.");
         showToast(data.message || "AI Analysis failed. Make sure Flask API is running.", "warning");
       }
     } catch (err) {
       setAnalyzing(false);
+      alert("Connection to Flask API failed");
       showToast("Connection to Flask API failed", "warning");
     }
   };
