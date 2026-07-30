@@ -40,7 +40,7 @@ def start_tunnel():
                     print(f"\n[+] Active Tunnel URL detected: {tunnel_url}")
                     
                     # Register tunnel URL to the database
-                    register_url = f"http://localhost/aicaries/api/register_tunnel.php?url={tunnel_url}"
+                    register_url = f"https://app-17b106e1-724c-43db-bcc5-196c5d9e4f65.cleverapps.io/api/register_tunnel.php?url={tunnel_url}"
                     try:
                         print(f"[*] Registering URL to cloud database via local API...")
                         req = urllib.request.Request(

@@ -72,6 +72,7 @@ $conn = getConnection();
 $ai_api_url = getenv('AI_MODEL_URL') ?: "http://127.0.0.1:5000/predict";
 
 // Fetch the dynamically registered tunnel URL from database
+$conn->query("CREATE TABLE IF NOT EXISTS settings (key_name VARCHAR(50) PRIMARY KEY, key_value TEXT)");
 $settings_check = $conn->query("SELECT key_value FROM settings WHERE key_name = 'ai_model_url'");
 if ($settings_check && $settings_check->num_rows > 0) {
     $settings_row = $settings_check->fetch_assoc();
