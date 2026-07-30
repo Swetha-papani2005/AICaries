@@ -204,23 +204,48 @@ class ScanFragment : Fragment() {
 
         try {
 
-            val inputStream =
-                requireContext()
-                    .contentResolver
-                    .openInputStream(imageUri)
-
             val file = File(
                 requireContext().cacheDir,
                 "scan_image.jpg"
             )
 
-            val outputStream = FileOutputStream(file)
-
-            inputStream?.copyTo(outputStream)
-
-            inputStream?.close()
-
-            outputStream.close()
+            // Compress and downscale image on-the-fly to prevent timeouts and file size limit failures
+            val bitmap = android.graphics.BitmapFactory.decodeStream(
+                requireContext().contentResolver.openInputStream(imageUri)
+            )
+            if (bitmap != null) {
+                val maxDimension = 1024
+                val width = bitmap.width
+                val height = bitmap.height
+                val (newWidth, newHeight) = if (width > height) {
+                    if (width > maxDimension) {
+                        Pair(maxDimension, (height * (maxDimension.toFloat() / width)).toInt())
+                    } else {
+                        Pair(width, height)
+                    }
+                } else {
+                    if (height > maxDimension) {
+                        Pair((width * (maxDimension.toFloat() / height)).toInt(), maxDimension)
+                    } else {
+                        Pair(width, height)
+                    }
+                }
+                val scaledBitmap = android.graphics.Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+                val fos = FileOutputStream(file)
+                scaledBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, fos)
+                fos.close()
+                if (scaledBitmap != bitmap) {
+                    scaledBitmap.recycle()
+                }
+                bitmap.recycle()
+            } else {
+                // Fallback to copy if decode fails
+                val inputStream = requireContext().contentResolver.openInputStream(imageUri)
+                val outputStream = FileOutputStream(file)
+                inputStream?.copyTo(outputStream)
+                inputStream?.close()
+                outputStream.close()
+            }
 
             val client = OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
