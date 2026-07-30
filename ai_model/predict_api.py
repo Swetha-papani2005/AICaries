@@ -48,7 +48,7 @@ def validate_image(image_bytes):
         print(f"Gums Ratio: {gums_ratio:.4f}, Teeth Ratio: {teeth_ratio:.4f}")
         
         # If gums and teeth features are almost non-existent, it's not a mouth image
-        if gums_ratio < 0.005 and teeth_ratio < 0.01:
+        if gums_ratio < 0.003 or teeth_ratio < 0.005:
             print("Validation: Failed (Not a teeth image)")
             return False, "Invalid Image: This is not an image of teeth."
             
