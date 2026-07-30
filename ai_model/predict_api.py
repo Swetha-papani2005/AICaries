@@ -235,10 +235,10 @@ if __name__ == '__main__':
 
     load_model()
 
-    print("AI API running on port 5000")
+    print("AI API running on port 5001")
 
     app.run(
         host='0.0.0.0',
-        port=5000,
+        port=5001,
         debug=False
     )
